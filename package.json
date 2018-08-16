@@ -4,6 +4,7 @@
   "description": "MosyreIDE",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -11,5 +12,8 @@
     "IDE"
   ],
   "author": "Manh Le",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.0"
+  }
 }
