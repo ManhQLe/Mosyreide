@@ -1,0 +1,6 @@
+[
+    {
+        "less":"./src/content/less/main.less",
+        "css":"./src/content/css/main.css"
+    }
+]
