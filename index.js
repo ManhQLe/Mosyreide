@@ -14,7 +14,7 @@ function translate(from,to){
 				if (e)
 					console.log(e);
 				else
-					fs.writeFile(to,data,'utf-8',()=>{})					
+					fs.writeFile(to,out.css,'utf-8',()=>{})
 			})	
 	});
 }
