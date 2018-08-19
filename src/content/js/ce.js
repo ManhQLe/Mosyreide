@@ -36,7 +36,7 @@ class CE extends mosyrejs2.Clay {
     init() {
         let { canvas } = this.agreement;
 
-        let g = this.__.d3g = d3.select(canvas).append("g");
+        this.__.d3g = d3.select(canvas).append("g");
         let track = this.__.track = {
             x: 0,
             y: 0
@@ -69,9 +69,17 @@ class CE extends mosyrejs2.Clay {
         })
     }
 
-    world2View(p) {
+    getViewLen(wp){
+        return [wp[0] *this.zoom,wp[1] * this.zoom]
+    }
+
+    getWorldLen(vp){
+        return [vp[0] / this.zoom,vp[1] / this.zoom]
+    }
+
+    world2View(wp) {
         let pos = this.pos;
-        return [(p[0] - pos[0]) / this.zoom, (p[1] - pos[1]) * this.zoom]
+        return [(wp[0] - pos[0]) / this.zoom, (wp[1] - pos[1]) * this.zoom]
     }
 
     view2World(px) {
