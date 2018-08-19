@@ -22,15 +22,15 @@ class CE extends mosyrejs2.Clay {
                 set: (v) => zoomRate = v
             }
         })
+        this.defineAgreement("canvas", document.createElement("svg"))
+
+        this.init()
 
         if (agr.zoom !== undefined)
             this.zoom = agr.zoom;
         if (agr.pos !== undefined)
             this.pos = agr.pos
 
-        this.defineAgreement("canvas", document.createElement("svg"))
-
-        this.init()
     }
 
     init() {
@@ -50,6 +50,7 @@ class CE extends mosyrejs2.Clay {
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.x = e.clientX;
             track.y = e.clientY;
+            console.log(this.view2World([e.clientX, e.clientY]))
         })
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
@@ -64,15 +65,18 @@ class CE extends mosyrejs2.Clay {
                 track.y = e.clientY;
                 this.pos = pos;
             }
+
         })
     }
 
-    toWorld2View(p) {
-        return [p[0] * this.zoom, p[1] * this.zoom]
+    world2View(p) {
+        let pos = this.pos;
+        return [(p[0] - pos[0]) / this.zoom, (p[1] - pos[1]) * this.zoom]
     }
 
-    toView2World(px) {
-        return [p[0] * this.zoom, p[1] * this.zoom]
+    view2World(px) {
+        let pos = this.pos;
+        return [pos[0] + px[0] * this.zoom, pos[1] + px[1] * this.zoom]
     }
 
     applyTransforms() {
