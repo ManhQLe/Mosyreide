@@ -9,49 +9,25 @@
 
     <script src="content/d3/d3.min.js"></script>
     <script src="content/mosyrejs2/mosyrejs2.min.js"></script>
+
+    <script src="content/js/main.js"></script>
+    <script src="content/js/ce.js"></script>
 </head>
 <body>
-    <svg id="main-canvas">
-        <g id="move">
-            <rect x="0" y="0" width="100" height="100" stroke="white"/>
-        </g>
+    <svg id="main-canvas">        
     </svg>
 
     <script>
-        let canvas = document.getElementById("main-canvas")
-        let x,y,zoom=8;
-        let px = 0,py = 0;
-        let transform = ["",""];
-        d3.select(canvas).on("wheel",function(e = d3.event){
-            if(e.deltaY < 0){
-                zoom+=.1;
-            }
-            else zoom-=.1;
-            zoom = Math.max(0,zoom)
-            transform[0] = `scale(${zoom})`
-            mov.attr("transform",transform.join(" "))
+        let ce = new CE({
+            canvas:document.getElementById("main-canvas")
         })
 
-        d3.select(canvas).on("mousedown",function(e = d3.event){            
-            x = e.clientX;
-            y = e.clientY;
-        })
-        let mov = d3.select("#move")
-        d3.select(canvas).on("mousemove",function(e = d3.event){            
-            if(e.buttons === 1){
-                let dx =x - e.clientX;
-                let dy =y - e.clientY;
-                px+=dx/zoom;
-                py+=dy/zoom;
-                x=e.clientX;
-                y=e.clientY;
-                transform[1] = `translate(${-px},${-py})`
-                mov.attr("transform", transform.join(" "))
-
-            }
-            
-        })
-        
+        ce.__.d3g.append("rect")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("width",100)
+        .attr("height",100)
+        .attr("stroke","white")
     </script>
 </body>
 </html>
