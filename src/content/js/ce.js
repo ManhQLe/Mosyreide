@@ -36,7 +36,7 @@ class CE extends mosyrejs2.Clay {
     init() {
         let { canvas } = this.agreement;
 
-        this.__.g = document.createElementNS(canvas.namespaceURI,"g");
+        this.__.g = document.createElementNS(canvas.namespaceURI, "g");
         canvas.appendChild(this.__.g);
         let track = this.__.track = {
             x: 0,
@@ -46,7 +46,7 @@ class CE extends mosyrejs2.Clay {
         d3.select(canvas).on("wheel", (e = d3.event) => {
             let rate = this.zoomRate;
             let nz = this.zoom + ((e.deltaY < 0) ? rate : -rate);
-            this.zoomView([e.clientX,e.clientY],nz)            
+            this.zoomTo(nz, [e.clientX, e.clientY])
         })
 
         d3.select(canvas).on("mousedown", (e = d3.event) => {
@@ -56,12 +56,10 @@ class CE extends mosyrejs2.Clay {
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
             if (e.buttons == 1) {
-                let zoom = this.zoom;
-                let dx = track.x - e.clientX;
-                let dy = track.y - e.clientY;
+                let dv = this.toViewScale([track.x - e.clientX, track.y - e.clientY])
                 let pos = this.pos;
-                this.pos[0] += dx / zoom
-                this.pos[1] += dy / zoom
+                pos[0] += dv[0];
+                pos[1] += dv[1];
                 track.x = e.clientX;
                 track.y = e.clientY;
                 this.pos = pos;
@@ -69,30 +67,29 @@ class CE extends mosyrejs2.Clay {
         })
     }
 
-    zoomView(px,z){
-        let cz = this.zoom;
-        let cwp = CE.view2World(px,cz,this.pos);
-        let nwp = CE.view2World(px,z,this.pos);        
-        let dv = [cwp[0]-nwp[0],cwp[1]- nwp[1]]        
-        this.pos[0]-=dv[0];
-        this.pos[1]-=dv[1];
-        this.zoom = z
+    zoomTo(z, atPx) {
+        let w1 = this.view2World(atPx);
+        let w2 = CE.view2World(atPx,z,this.pos);
+        let dx = [w1[0]-w2[0],w1[1]-w2[1]]
+        this.pos[0]+=dx[0];
+        this.pos[1]+=dx[1];        
+        this.zoom = z;       
     }
 
-    getViewScale(wp){
-        return CE.getViewScale(wp,this.zoom);
+    toViewScale(wp) {
+        return CE.getScale(wp, 1/this.zoom);
     }
 
-    getWorldScale(vp){
-        return CE.getWorldScale(p,this.zoom);
+    toWorldScale(vp) {
+        return CE.getScale(vp, this.zoom);
     }
 
     world2View(wp) {
-        return CE.world2View(wp,this.zoom,this.pos);
+        return CE.world2View(wp, this.zoom, this.pos);
     }
 
     view2World(px) {
-        return CE.view2World(px,this.zoom,this.pos);        
+        return CE.view2World(px, this.zoom, this.pos);
     }
 
     applyTransforms() {
@@ -102,19 +99,16 @@ class CE extends mosyrejs2.Clay {
         this.__.g.setAttribute("transform", transforms.join(" "));
     }
 
-    static getWorldScale(vp,z){
-        return [vp[0] / z,vp[1] / z]
+
+    static getScale(wp, z) {
+        return [wp[0] * z, wp[1] * z]
     }
 
-    static getViewScale(wp,z){
-        return [wp[0] *z,wp[1] * z]
+    static world2View(wp, zoom, pos) {
+        return [(wp[0] - pos[0]) * zoom, (wp[1] - pos[1]) * zoom]
     }
 
-    static world2View(wp,zoom,pos){
-        return [(wp[0] - pos[0]) / zoom, (wp[1] - pos[1]) * zoom]
-    }
-
-    static view2World(px,zoom,pos){
-        return [pos[0] + px[0] * zoom, pos[1] + px[1] * zoom]
+    static view2World(px, zoom, pos) {
+        return [pos[0] + px[0] / zoom, pos[1] + px[1] / zoom]
     }
 }
