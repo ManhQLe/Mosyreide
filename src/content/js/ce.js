@@ -36,7 +36,8 @@ class CE extends mosyrejs2.Clay {
     init() {
         let { canvas } = this.agreement;
 
-        this.__.d3g = d3.select(canvas).append("g");
+        this.__.g = document.createElementNS(canvas.namespaceURI,"g");
+        canvas.appendChild(this.__.g);
         let track = this.__.track = {
             x: 0,
             y: 0
@@ -44,13 +45,13 @@ class CE extends mosyrejs2.Clay {
 
         d3.select(canvas).on("wheel", (e = d3.event) => {
             let rate = this.zoomRate;
-            this.zoom += (e.deltaY < 0) ? rate : -rate;
+            let nz = this.zoom + ((e.deltaY < 0) ? rate : -rate);
+            this.zoomView([e.clientX,e.clientY],nz)            
         })
 
         d3.select(canvas).on("mousedown", (e = d3.event) => {
             track.x = e.clientX;
             track.y = e.clientY;
-            console.log(this.view2World([e.clientX, e.clientY]))
         })
 
         d3.select(canvas).on("mousemove", (e = d3.event) => {
@@ -65,32 +66,55 @@ class CE extends mosyrejs2.Clay {
                 track.y = e.clientY;
                 this.pos = pos;
             }
-
         })
     }
 
-    getViewLen(wp){
-        return [wp[0] *this.zoom,wp[1] * this.zoom]
+    zoomView(px,z){
+        let cz = this.zoom;
+        let cwp = CE.view2World(px,cz,this.pos);
+        let nwp = CE.view2World(px,z,this.pos);        
+        let dv = [cwp[0]-nwp[0],cwp[1]- nwp[1]]        
+        this.pos[0]-=dv[0];
+        this.pos[1]-=dv[1];
+        this.zoom = z
     }
 
-    getWorldLen(vp){
-        return [vp[0] / this.zoom,vp[1] / this.zoom]
+    getViewScale(wp){
+        return CE.getViewScale(wp,this.zoom);
+    }
+
+    getWorldScale(vp){
+        return CE.getWorldScale(p,this.zoom);
     }
 
     world2View(wp) {
-        let pos = this.pos;
-        return [(wp[0] - pos[0]) / this.zoom, (wp[1] - pos[1]) * this.zoom]
+        return CE.world2View(wp,this.zoom,this.pos);
     }
 
     view2World(px) {
-        let pos = this.pos;
-        return [pos[0] + px[0] * this.zoom, pos[1] + px[1] * this.zoom]
+        return CE.view2World(px,this.zoom,this.pos);        
     }
 
     applyTransforms() {
         let transforms = [];
         transforms[0] = `scale(${this.zoom})`;
         transforms[1] = `translate(${-this.pos[0]}, ${-this.pos[1]})`
-        this.__.d3g.attr("transform", transforms.join(" "));
+        this.__.g.setAttribute("transform", transforms.join(" "));
+    }
+
+    static getWorldScale(vp,z){
+        return [vp[0] / z,vp[1] / z]
+    }
+
+    static getViewScale(wp,z){
+        return [wp[0] *z,wp[1] * z]
+    }
+
+    static world2View(wp,zoom,pos){
+        return [(wp[0] - pos[0]) / zoom, (wp[1] - pos[1]) * zoom]
+    }
+
+    static view2World(px,zoom,pos){
+        return [pos[0] + px[0] * zoom, pos[1] + px[1] * zoom]
     }
 }

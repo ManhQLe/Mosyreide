@@ -20,10 +20,10 @@
     <script>
         let ce = new CE({
             canvas:document.getElementById("main-canvas"),
-            pos:[50,50]
+            pos:[0,0]
         })
 
-        ce.__.d3g.append("rect")
+        d3.select(ce.__.g).append("rect")
         .attr("x",0)
         .attr("y",0)
         .attr("width",100)
