@@ -6,7 +6,7 @@ class CE extends mosyrejs2.Clay {
             "zoom": {
                 get: () => zoom,
                 set: (v) => {
-                    zoom = Math.max(v, 0.01)
+                    zoom = Math.max(v, 0.05)
                     this.applyTransforms()
                 }
             },
@@ -68,12 +68,42 @@ class CE extends mosyrejs2.Clay {
     }
 
     zoomTo(z, atPx) {
+        z = Math.max(z,0.05)
         let w1 = this.view2World(atPx);
         let w2 = CE.view2World(atPx,z,this.pos);
         let dx = [w1[0]-w2[0],w1[1]-w2[1]]
         this.pos[0]+=dx[0];
         this.pos[1]+=dx[1];        
         this.zoom = z;       
+    }
+
+    zoom(dz,atPx){
+        this.zoomTo(this.zoom+dz,atPx);
+    }
+
+    zoomWRect(wrect){
+        let { canvas } = this.agreement;
+        let cl = this.toWorldScale([canvas.clientWidth,canvas.clientHeight])
+        console.log(cl)
+        let z;
+        if(wrect.w > wrect.h){
+            z = cl[0]/wrect.w;
+        }
+        else
+        {
+            z = cl[1]/wrect.h;
+        }
+        this.pos[0] = wrect.x;
+        this.pos[1] = wrect.y
+        console.log(z)
+        this.zoom =z;
+
+    }
+
+    zoomVRect(vrect){
+        let [w,h] = this.toWorldScale([vrect.w,vrect.h]);
+        let [x,y] = this.view2World([vrect.x,vrect.y])
+        this.zoomWRect({x,y,w,h})
     }
 
     toViewScale(wp) {

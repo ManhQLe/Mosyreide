@@ -20,7 +20,7 @@
     <script>
         let ce = new CE({
             canvas:document.getElementById("main-canvas"),
-            pos:[50,50],zoom:2
+
         })
 
         d3.select(ce.__.g).append("rect")
@@ -28,7 +28,26 @@
         .attr("y",0)
         .attr("width",100)
         .attr("height",100)
-        .attr("stroke","white")
+        .attr("stroke","#ecf0f1")
+
+        d3.select(ce.__.g).append("circle")
+        .attr("cx",50)
+        .attr("cy",50)
+        .attr('r',30)
+        .attr("fill","#f1c40f")
+
+        d3.select(ce.__.g).append("circle")
+        .attr("cx",50)
+        .attr("cy",100)
+        .attr('r',50)
+        .attr("fill","#e74c3c")
+
+        ce.zoomWRect({
+            x:50,
+            y:50,
+            w:50,
+            h:100
+        })
     </script>
 </body>
 </html>
