@@ -81,28 +81,33 @@ class CE extends mosyrejs2.Clay {
         this.zoomTo(this.zoom+dz,atPx);
     }
 
-    zoomWRect(wrect){
+    zoomWRect(wrect,autoCenter){
+        autoCenter = autoCenter?1:0;  
         let { canvas } = this.agreement;
-        let cl = this.toWorldScale([canvas.clientWidth,canvas.clientHeight])
-        let z;
+        let cl = [canvas.clientWidth,canvas.clientHeight] //Calculate from scale 1
+        let z,xe = 0,ye = 0;
         if(wrect.w > wrect.h){
-            z = cl[0]/wrect.w;
+            z = cl[0]/wrect.w;           
+            //Enable to center y;
+            ye = 1;
         }
         else
-        {
-            z = cl[1]/wrect.h;
-        }
-        this.pos[0] = wrect.x;
-        this.pos[1] = wrect.y
+        {            
+            z = cl[1]/wrect.h;  
+            xe = 1           
+        }         
+        cl = CE.calWorldScale([canvas.clientWidth,canvas.clientHeight],z);        
+        this.pos[0] = wrect.x - (cl[0]-wrect.w)*.5*xe*autoCenter;
+        this.pos[1] = wrect.y - (cl[1]-wrect.h)*.5*ye*autoCenter;
         
-        this.zoom =z;
+        this.zoom = z;
 
     }
 
-    zoomVRect(vrect){
+    zoomVRect(vrect,autoCenter){
         let [w,h] = this.toWorldScale([vrect.w,vrect.h]);
         let [x,y] = this.view2World([vrect.x,vrect.y])
-        this.zoomWRect({x,y,w,h})
+        this.zoomWRect({x,y,w,h},centerEnable)
     }
 
     toCenterOf(g){
@@ -142,6 +147,10 @@ class CE extends mosyrejs2.Clay {
 
     static getScale(wp, z) {
         return [wp[0] * z, wp[1] * z]
+    }
+
+    static calWorldScale(wp,z){
+        return this.getScale(wp,1/z)
     }
 
     static world2View(wp, zoom, pos) {
