@@ -43,20 +43,20 @@ class CE extends mosyrejs2.Clay {
             y: 0
         }
 
-        d3.select(canvas).on("wheel", (e = d3.event) => {
+        canvas.addEventListener("wheel", (e = d3.event) => {
             let rate = this.zoomRate;
             let nz = this.zoom + ((e.deltaY < 0) ? rate : -rate);
             this.zoomTo(nz, [e.clientX, e.clientY])
         })
 
-        d3.select(canvas).on("mousedown", (e = d3.event) => {
+        canvas.addEventListener("mousedown", (e = d3.event) => {
             track.x = e.clientX;
             track.y = e.clientY;
         })
 
-        d3.select(canvas).on("mousemove", (e = d3.event) => {
+        canvas.addEventListener("mousemove", (e = d3.event) => {
             if (e.buttons == 1) {
-                let dv = this.toViewScale([track.x - e.clientX, track.y - e.clientY])
+                let dv = this.toWorldScale([track.x - e.clientX, track.y - e.clientY])
                 let pos = this.pos;
                 pos[0] += dv[0];
                 pos[1] += dv[1];
@@ -84,7 +84,6 @@ class CE extends mosyrejs2.Clay {
     zoomWRect(wrect){
         let { canvas } = this.agreement;
         let cl = this.toWorldScale([canvas.clientWidth,canvas.clientHeight])
-        console.log(cl)
         let z;
         if(wrect.w > wrect.h){
             z = cl[0]/wrect.w;
@@ -95,7 +94,7 @@ class CE extends mosyrejs2.Clay {
         }
         this.pos[0] = wrect.x;
         this.pos[1] = wrect.y
-        console.log(z)
+        
         this.zoom =z;
 
     }
@@ -106,12 +105,24 @@ class CE extends mosyrejs2.Clay {
         this.zoomWRect({x,y,w,h})
     }
 
+    toCenterOf(g){
+        let { canvas } = this.agreement;
+        let bb = g.getBBox()
+        let cp = [bb.x + bb.width*.5,bb.y + bb.height*.5];
+        let cl = this.toWorldScale([canvas.clientWidth,canvas.clientHeight])
+        this.pos = [cp[0]-cl[0]*.5, cp[1]-cl[1]*.5]
+    }
+
+    toCenter(){
+        this.toCenterOf(this.__.g);
+    }
+
     toViewScale(wp) {
-        return CE.getScale(wp, 1/this.zoom);
+        return CE.getScale(wp, this.zoom);
     }
 
     toWorldScale(vp) {
-        return CE.getScale(vp, this.zoom);
+        return CE.getScale(vp, 1/this.zoom);
     }
 
     world2View(wp) {
@@ -128,7 +139,6 @@ class CE extends mosyrejs2.Clay {
         transforms[1] = `translate(${-this.pos[0]}, ${-this.pos[1]})`
         this.__.g.setAttribute("transform", transforms.join(" "));
     }
-
 
     static getScale(wp, z) {
         return [wp[0] * z, wp[1] * z]
