@@ -1,7 +1,7 @@
 class CE extends mosyrejs2.Clay {
     constructor(agr) {
         super(agr)
-        let zoom = 1, pos = [0, 0], zoomRate = 0.1;
+        let zoom = 1, pos = [0, 0], zoomRate = 0.35;
         Object.defineProperties(this, {
             "zoom": {
                 get: () => zoom,
@@ -19,7 +19,7 @@ class CE extends mosyrejs2.Clay {
             },
             "zoomRate": {
                 get: () => zoomRate,
-                set: (v) => zoomRate = v
+                set: (v) => zoomRate = Math.max(v,0)
             }
         })
         this.defineAgreement("canvas", document.createElement("svg"))
@@ -30,7 +30,8 @@ class CE extends mosyrejs2.Clay {
             this.zoom = agr.zoom;
         if (agr.pos !== undefined)
             this.pos = agr.pos
-
+        if(agr.zoomRate!==undefined)
+            this.zoomRate = agr.zoomRate;
     }
 
     init() {
