@@ -27,8 +27,9 @@ body {
 .layout-table > .layout-row[expand] {
   flex-grow: 1;
 }
-.layout-table > .layout-row[expand] > .toolbar-container {
-  width: 10%;
+.layout-table > .layout-row[expand] > .bar-container {
+  position: relative;
+  overflow: visible;
 }
 .layout-table > .layout-row[expand] > .canvas-container {
   width: 100%;

@@ -22,19 +22,18 @@ html,body{
         display: flex;
         &[shrink]{
             flex-grow: 0;
-            >.menu-container{            
+            >.menu-container{
             }    
         }
         &[expand]{
             flex-grow:1;
-            >.toolbar-container{
-                width:10%;
+            >.bar-container{
+                position: relative;
+                overflow: visible;
             }
             >.canvas-container{
                 width: 100%;
-            }
-        }
-        
+            }            
+        }   
     }
-    
 }
