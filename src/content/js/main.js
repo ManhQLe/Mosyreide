@@ -49,11 +49,11 @@ d3.select(ce.__.g).append("rect")
 .attr("stroke","#9b59b6")
 .attr("fill","none")
 
-ce.zoomWRect({
-    x:50,
-    y:50,
-    w:50,
-    h:100
-},1)
+// ce.zoomWRect({
+//     x:50,
+//     y:50,
+//     w:50,
+//     h:100
+// },1)
 //ce.toCenter();
 // ce.lookAt([0,0])
