@@ -11,5 +11,30 @@ html,body{
     height:100%;
     overflow:hidden;
     background-color: #000000;
+}
 
+.layout-table{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    >.layout-row {
+        flex-direction: row;
+        display: flex;
+        &[shrink]{
+            flex-grow: 0;
+            >.menu-container{            
+            }    
+        }
+        &[expand]{
+            flex-grow:1;
+            >.toolbar-container{
+                width:10%;
+            }
+            >.canvas-container{
+                width: 100%;
+            }
+        }
+        
+    }
+    
 }

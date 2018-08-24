@@ -75,7 +75,7 @@ class CE extends mosyrejs2.Clay {
         let dx = [w1[0]-w2[0],w1[1]-w2[1]]
         this.pos[0]+=dx[0];
         this.pos[1]+=dx[1];        
-        this.zoom = z;       
+        this.zoom = z;
     }
 
     zoom(dz,atPx){
@@ -89,20 +89,14 @@ class CE extends mosyrejs2.Clay {
         let z,xe = 0,ye = 0;
         if(wrect.w > wrect.h){
             z = cl[0]/wrect.w;           
-            //Enable to center y;
-            ye = 1;
         }
         else
         {            
             z = cl[1]/wrect.h;  
-            xe = 1           
         }         
-        cl = CE.calWorldScale([canvas.clientWidth,canvas.clientHeight],z);        
-        this.pos[0] = wrect.x - (cl[0]-wrect.w)*.5*xe*autoCenter;
-        this.pos[1] = wrect.y - (cl[1]-wrect.h)*.5*ye*autoCenter;
         
-        this.zoom = z;
-
+        let center = [wrect.x + wrect.w*.5*autoCenter,wrect.y+ wrect.h*.5*autoCenter]
+        this.lookAt(center,z);
     }
 
     zoomVRect(vrect,autoCenter){
@@ -112,11 +106,18 @@ class CE extends mosyrejs2.Clay {
     }
 
     toCenterOf(g){
-        let { canvas } = this.agreement;
         let bb = g.getBBox()
         let cp = [bb.x + bb.width*.5,bb.y + bb.height*.5];
-        let cl = this.toWorldScale([canvas.clientWidth,canvas.clientHeight])
-        this.pos = [cp[0]-cl[0]*.5, cp[1]-cl[1]*.5]
+        this.lookAt(cp)
+    }
+
+    lookAt(p,z){
+        let { canvas } = this.agreement;
+        z = z?z:this.zoom
+        let cl = CE.calWorldScale([canvas.clientWidth,canvas.clientHeight],z);
+        this.pos[0] = p[0]-cl[0]*.5
+        this.pos[1] = p[1]-cl[1]*.5
+        this.zoom = z;
     }
 
     toCenter(){
