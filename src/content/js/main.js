@@ -42,7 +42,7 @@ d3.select(canvas).on("drop",(e = d3.event)=>{
     let p = ce.view2World(getMouse(e));
     console.log(p)
     let c = createRClay(p);    
-    ce.__.g.append(c.agreement._vessel);
+    l.append(c.agreement._vessel);
 
 
 })
@@ -62,6 +62,8 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mousemove", (e) => {
     let m = getMouse(e)
     if (e.buttons == 1) {
+
+
         let dv = ce.toWorldScale([track.x - m[0], track.y - m[1]])
         let pos = ce.pos;
         pos[0] += dv[0];
@@ -73,13 +75,15 @@ canvas.addEventListener("mousemove", (e) => {
 })
 
 function Render(){
-    d3.select(ce.__.g).append("circle")
+    let l = ce.getLayer();
+
+    d3.select(l).append("circle")
     .attr("cx",50)
     .attr("cy",50)
     .attr('r',10)
     .attr("fill","#f1c40f")
     
-    d3.select(ce.__.g).append("rect")
+    d3.select(l).append("rect")
     .attr("x",0)
     .attr("y",0)
     .attr("width",100)
@@ -87,7 +91,7 @@ function Render(){
     .attr("stroke","#ecf0f1")
     .attr("fill","none")
     
-    d3.select(ce.__.g).append("rect")
+    d3.select(l).append("rect")
     .attr("x",0)
     .attr("y",0)
     .attr("width",100)
@@ -95,7 +99,7 @@ function Render(){
     .attr("stroke","#e74c3c")
     .attr("fill","none")
     
-    d3.select(ce.__.g).append("rect")
+    d3.select(l).append("rect")
     .attr("x",50)
     .attr("y",50)
     .attr("width",50)
@@ -104,13 +108,13 @@ function Render(){
     .attr("fill","none")
     
     
-    // d3.select(ce.__.g).append("circle")
+    // d3.select(l).append("circle")
     // .attr("cx",50)
     // .attr("cy",100)
     // .attr('r',50)
     // .attr("fill","#e74c3c")
     
-    d3.select(ce.__.g).append("rect")
+    d3.select(l).append("rect")
     .attr("x",50)
     .attr("y",50)
     .attr("width",50)

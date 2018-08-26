@@ -26,22 +26,33 @@ class CE extends mosyrejs2.Clay {
             this.zoom = agr.zoom;
         if (agr.pos !== undefined)
             this.pos = agr.pos
+
     }
 
-    init() {
-        let { canvas } = this.agreement;
+    init(agr) {
+        let { canvas, layers } = this.agreement;
 
-        this.__.g = document.createElementNS(canvas.namespaceURI, "g");
-        canvas.appendChild(this.__.g);
+        let lnames = layers || ["default"]
+        this.__.layers = [];
+
+        lnames.forEach(name => {
+            let layer = document.createElementNS(canvas.namespaceURI, "g")
+            this.__.layers.push({
+                name,
+                layer
+            })
+            canvas.appendChild(layer);
+        });
+
     }
 
     zoomTo(z, atPx) {
-        z = Math.max(z,0.05)
+        z = Math.max(z, 0.05)
         let w1 = this.toWorldScale(atPx);
-        let w2 = CE.calWorldScale(atPx,z);
-        let dx = [w1[0]-w2[0],w1[1]-w2[1]]
-        this.pos[0]+=dx[0];
-        this.pos[1]+=dx[1];        
+        let w2 = CE.calWorldScale(atPx, z);
+        let dx = [w1[0] - w2[0], w1[1] - w2[1]]
+        this.pos[0] += dx[0];
+        this.pos[1] += dx[1];
         this.zoom = z;
     }
 
@@ -107,13 +118,32 @@ class CE extends mosyrejs2.Clay {
     }
 
     _applyTransforms() {
-        let transforms = [];
-        transforms[0] = `scale(${this.zoom})`;
-        transforms[1] = `translate(${-this.pos[0]}, ${-this.pos[1]})`
-        this.__.g.setAttribute("transform", transforms.join(" "));
+        let transform = [`scale(${this.zoom})`,`translate(${-this.pos[0]}, ${-this.pos[1]})`].join(" ")
+        this.__.layers.forEach(l=>{
+            l.layer.setAttribute("transform", transform);
+        })
+        
     }
 
-    createElement(name){
+    addElement(e,layer){
+        if(layer)
+            for(let l of this.__.layers){
+                if(!layer || layer === l.name) 
+                {          
+                    l.layer.appendChild(e);
+                    return;
+                }                
+            }        
+    }
+
+    getLayer(layer){
+        for(let l of this.__.layers){
+            if(!layer || layer === l.name)
+                return l.layer;
+        }
+    }
+
+    createElement(name) {
         return document.createElementNS(this.agreement.canvas.namespaceURI, name)
     }
 
