@@ -97,10 +97,6 @@ class CE extends mosyrejs2.Clay {
         this.zoom = z;
     }
 
-    toCenter() {
-        this.toCenterOf(this.__.g);
-    }
-
     toViewScale(wp) {
         return CE.getScale(wp, this.zoom);
     }

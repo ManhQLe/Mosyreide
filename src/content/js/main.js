@@ -1,7 +1,31 @@
 
 let ce = new CE({
-    canvas:document.getElementById("main-canvas") 
+    canvas:document.getElementById("main-canvas"),
+    layers:["main","select"]
 })
+
+class SVGVessel{
+    constructor(svgConstruct,pos){
+        let position = pos || [0,0]
+        let construct = svgConstruct
+        Object.defineProperties(this,{
+            "pos":{
+                get(){
+                    return position;
+                },
+                set:(v)=>{
+                    position = pos;
+                    construct.setAttribute("transform",`translate(${position[0]},${position[1]})`)
+                }
+            },
+            "construct":{
+                get(){
+                    return construct;
+                }
+            }
+        })
+    }
+}
 
 var entities = [];
 let zoomRate = .15;
@@ -16,13 +40,16 @@ function createRClay(pos){
     let g = ce.createElement("g")
     g.setAttribute("transform",`translate(${pos[0]},${pos[1]})`)
     d3.select(g).append("rect")
+    .attr("x",-50)
+    .attr("y",-50)
     .attr("width",100)
     .attr("height",100)
     .attr("fill","gray")
 
-    var clay = new mosyrejs2.RClay({
-        _vessel:g,
 
+
+    var clay = new mosyrejs2.RClay({
+        _vessel:new SVGVessel(g,pos)
     })
     entities.push(clay);
     return clay;
@@ -41,7 +68,7 @@ d3.select(canvas).on("drop",(e = d3.event)=>{
     e.preventDefault();    
     let p = ce.view2World(getMouse(e));
     let c = createRClay(p);    
-    ce.addElement(c.agreement._vessel);
+    ce.addElement(c.agreement._vessel.construct);
 
 })
 
@@ -49,6 +76,20 @@ canvas.addEventListener("wheel", (e) => {
     let m = getMouse(e)    
     let nz = ce.zoom * (1 + ((e.deltaY < 0) ? zoomRate : -zoomRate));
     ce.zoomTo(nz, m)
+})
+
+canvas.addEventListener("click",(e)=>{
+    let m = getMouse(e);
+    let p = ce.toWorldScale(m);
+    p.push(0,0)
+    entities.forEach(e=>{
+        let vessel = e.agreement._vessel
+        let pos = vessel.pos;
+        let bbox = vessel.construct.getBBox();
+        console.log(bbox)
+        if(GEO.rectOverlap([bbox.x+pos[0],bbox.y+pos[1],bbox.width,bbox.height],p))
+            alert("hit")
+    })
 })
 
 canvas.addEventListener("mousedown", (e) => {
