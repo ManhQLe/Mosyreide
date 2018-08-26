@@ -26,14 +26,19 @@ html,body{
             }    
         }
         &[expand]{
-            flex-grow:1;
-            >.bar-container{
-                position: relative;
-                overflow: visible;
-            }
-            >.canvas-container{
-                width: 100%;
-            }            
+            flex-grow:1;                    
         }   
     }
 }
+
+.docked-bar-container{
+    width:15em;
+}
+
+.bar-container{
+    position: relative;
+    overflow: visible;
+}
+.canvas-container{
+    width: 100%;
+}    

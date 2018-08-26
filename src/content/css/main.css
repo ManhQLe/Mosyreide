@@ -27,10 +27,13 @@ body {
 .layout-table > .layout-row[expand] {
   flex-grow: 1;
 }
-.layout-table > .layout-row[expand] > .bar-container {
+.docked-bar-container {
+  width: 15em;
+}
+.bar-container {
   position: relative;
   overflow: visible;
 }
-.layout-table > .layout-row[expand] > .canvas-container {
+.canvas-container {
   width: 100%;
 }
