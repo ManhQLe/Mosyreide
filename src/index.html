@@ -50,13 +50,13 @@
             </nav>
         </div>
         <div class="layout-row" expand>
-            <div class="docked-bar-container">
-                <button class="btn btn-primary align-middle w-100">                    
+            <div class="docked-bar-container" draggable="true" >
+                <div id="create-rclay" class="btn btn-primary w-100">                    
                     <i class="far fa-square fa-2x"></i> RClay
-                </button>
+                </div>
 
             </div>
-            <div class="canvas-container">
+            <div class="canvas-container" ondragover="event.preventDefault()">
                 <svg id="main-canvas">
                 </svg>
             </div>

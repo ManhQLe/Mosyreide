@@ -1,7 +1,7 @@
 class CE extends mosyrejs2.Clay {
     constructor(agr) {
         super(agr)
-        let zoom = 1, pos = [0, 0], zoomRate = 0.35;
+        let zoom = 1, pos = [0, 0];
         Object.defineProperties(this, {
             "zoom": {
                 get: () => zoom,
@@ -16,10 +16,6 @@ class CE extends mosyrejs2.Clay {
                     pos = v
                     this._applyTransforms()
                 }
-            },
-            "zoomRate": {
-                get: () => zoomRate,
-                set: (v) => zoomRate = Math.max(v, 0)
             }
         })
         this.defineAgreement("canvas", document.createElement("svg"))
@@ -30,8 +26,6 @@ class CE extends mosyrejs2.Clay {
             this.zoom = agr.zoom;
         if (agr.pos !== undefined)
             this.pos = agr.pos
-        if (agr.zoomRate !== undefined)
-            this.zoomRate = agr.zoomRate;
     }
 
     init() {
@@ -39,38 +33,6 @@ class CE extends mosyrejs2.Clay {
 
         this.__.g = document.createElementNS(canvas.namespaceURI, "g");
         canvas.appendChild(this.__.g);
-        let track = this.__.track = [{
-            x: 0,
-            y: 0
-        }]
-
-        canvas.addEventListener("wheel", (e) => {
-            let m = this._getMouse(e)
-            let rate = this.zoomRate;
-            let nz = this.zoom + ((e.deltaY < 0) ? rate : -rate);
-            this.zoomTo(nz, m)
-        })
-
-        canvas.addEventListener("mousedown", (e) => {
-            let m = this._getMouse(e)
-            track.x = m[0];
-            track.y = m[1];
-            console.log(m)
-            console.log(this.view2World(m))
-        })
-
-        canvas.addEventListener("mousemove", (e) => {
-            let m = this._getMouse(e)
-            if (e.buttons == 1) {
-                let dv = this.toWorldScale([track.x - m[0], track.y - m[1]])
-                let pos = this.pos;
-                pos[0] += dv[0];
-                pos[1] += dv[1];
-                track.x = m[0];
-                track.y = m[1];
-                this.pos = pos;
-            }
-        })
     }
 
     zoomTo(z, atPx) {
@@ -151,11 +113,8 @@ class CE extends mosyrejs2.Clay {
         this.__.g.setAttribute("transform", transforms.join(" "));
     }
 
-    _getMouse(e){
-        var rect = this.agreement.canvas.getBoundingClientRect();
-        var x = e.clientX - rect.left; //x position within the element.
-        var y = e.clientY - rect.top;  //y position within the element.
-        return [x,y]
+    createElement(name){
+        return document.createElementNS(this.agreement.canvas.namespaceURI, name)
     }
 
     static getScale(wp, z) {
