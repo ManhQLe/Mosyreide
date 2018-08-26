@@ -118,27 +118,25 @@ class CE extends mosyrejs2.Clay {
     }
 
     _applyTransforms() {
-        let transform = [`scale(${this.zoom})`,`translate(${-this.pos[0]}, ${-this.pos[1]})`].join(" ")
-        this.__.layers.forEach(l=>{
+        let transform = [`scale(${this.zoom})`, `translate(${-this.pos[0]}, ${-this.pos[1]})`].join(" ")
+        this.__.layers.forEach(l => {
             l.layer.setAttribute("transform", transform);
         })
-        
+
     }
 
-    addElement(e,layer){
-        if(layer)
-            for(let l of this.__.layers){
-                if(!layer || layer === l.name) 
-                {          
-                    l.layer.appendChild(e);
-                    return;
-                }                
-            }        
+    addElement(e, layer) {
+        for (let l of this.__.layers) {
+            if (!layer || layer === l.name) {
+                l.layer.appendChild(e);
+                return;
+            }
+        }
     }
 
-    getLayer(layer){
-        for(let l of this.__.layers){
-            if(!layer || layer === l.name)
+    getLayer(layer) {
+        for (let l of this.__.layers) {
+            if (!layer || layer === l.name)
                 return l.layer;
         }
     }

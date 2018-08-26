@@ -40,10 +40,8 @@ function getMouse(e){
 d3.select(canvas).on("drop",(e = d3.event)=>{
     e.preventDefault();    
     let p = ce.view2World(getMouse(e));
-    console.log(p)
     let c = createRClay(p);    
-    l.append(c.agreement._vessel);
-
+    ce.addElement(c.agreement._vessel);
 
 })
 
