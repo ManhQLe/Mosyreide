@@ -45,7 +45,7 @@ function createRClay(pos){
     .attr("width",100)
     .attr("height",100)
     .attr("fill","gray")
-
+    .attr("draggable",true)
 
 
     var clay = new mosyrejs2.RClay({
@@ -80,15 +80,28 @@ canvas.addEventListener("wheel", (e) => {
 
 canvas.addEventListener("click",(e)=>{
     let m = getMouse(e);
-    let p = ce.toWorldScale(m);
-    p.push(0,0)
+    let p = ce.view2World(m);    
     entities.forEach(e=>{
         let vessel = e.agreement._vessel
         let pos = vessel.pos;
         let bbox = vessel.construct.getBBox();
-        console.log(bbox)
-        if(GEO.rectOverlap([bbox.x+pos[0],bbox.y+pos[1],bbox.width,bbox.height],p))
-            alert("hit")
+        if(GEO.rectOverlap({x:bbox.x+pos[0],y:bbox.y+pos[1],w:bbox.width,h:bbox.height},
+            {x:p[0],y:p[1],w:0,h:0}
+        ))
+        {
+            let g = ce.createElement("g")            
+            d3.select(g)
+            .append("rect")
+            .attr("x",bbox.x+pos[0])
+            .attr("y",bbox.y+pos[1])
+            .attr("width",bbox.width)
+            .attr("height",bbox.height)
+            .attr("stroke","white")
+            .attr("stroke-dasharray",3)
+            .attr("fill","none")
+            ce.getLayer("select")
+            ce.addElement(g,"select");
+        }
     })
 })
 

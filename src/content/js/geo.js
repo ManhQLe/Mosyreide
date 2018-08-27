@@ -7,8 +7,7 @@ const GEO = {
         return a[1] >= b[0] && a[0]<=b[1]
     },
     rectOverlap(r1,r2){
-        return this.isOverlap([r1[0],r1[0]+r1[2]],[r2[0],r2[0]+r2[2]])
-             && this.isOverlap([r1[1],r1[1]+r1[3]],[r2[1],r2[1]+r2[3]])
-    },
-    
+        return this.isOverlap([r1.x,r1.x+r1.w],[r2.x,r2.x+r2.w])
+            && this.isOverlap([r1.y,r1.y+r1.h],[r2.y,r2.y+r2.h])
+    }
 }
