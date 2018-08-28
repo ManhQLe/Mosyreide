@@ -137,6 +137,20 @@ class CE extends mosyrejs2.Clay {
         }
     }
 
+    clearLayers(layers)
+    {
+        for (let l of this.__.layers) {            
+            if (layers && layers.indexOf(l.name)>=0)
+            {
+                let all = l.layer.childNodes;
+                while(all.length)
+                {
+                    l.layer.removeChild(all[0])
+                }                
+            }
+        }
+    }
+
     createElement(name) {
         return document.createElementNS(this.agreement.canvas.namespaceURI, name)
     }

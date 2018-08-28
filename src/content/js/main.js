@@ -80,15 +80,18 @@ canvas.addEventListener("wheel", (e) => {
 
 canvas.addEventListener("click",(e)=>{
     let m = getMouse(e);
-    let p = ce.view2World(m);    
+    let p = ce.view2World(m);
+    ce.clearLayers(["select"])
     entities.forEach(e=>{
         let vessel = e.agreement._vessel
         let pos = vessel.pos;
         let bbox = vessel.construct.getBBox();
+        
         if(GEO.rectOverlap({x:bbox.x+pos[0],y:bbox.y+pos[1],w:bbox.width,h:bbox.height},
             {x:p[0],y:p[1],w:0,h:0}
         ))
         {
+
             let g = ce.createElement("g")            
             d3.select(g)
             .append("rect")
@@ -99,7 +102,7 @@ canvas.addEventListener("click",(e)=>{
             .attr("stroke","white")
             .attr("stroke-dasharray",3)
             .attr("fill","none")
-            ce.getLayer("select")
+            
             ce.addElement(g,"select");
         }
     })
