@@ -96,45 +96,48 @@ canvas.addEventListener("wheel", (e) => {
     ce.zoomTo(nz, m)
 })
 
-canvas.addEventListener("click", (e) => {
-    let m = getMouse(e);
-    let p = ce.view2World(m);
-    ce.clearLayers(["select"])
-    let ents = findEntitiesByHitPoint(p);
-
-
-    ents.forEach(e => {
-        let vessel = e.agreement._vessel
-        let pos = vessel.pos;
-        let bbox = vessel.construct.getBBox();
-
-        let g = ce.createElement("g")
-        d3.select(g)
-            .append("rect")
-            .attr("x", bbox.x + pos[0])
-            .attr("y", bbox.y + pos[1])
-            .attr("width", bbox.width)
-            .attr("height", bbox.height)
-            .attr("stroke", "white")
-            .attr("stroke-dasharray", 3)
-            .attr("fill", "none")
-
-        ce.addElement(g, "select");
-
-    })
-})
 
 canvas.addEventListener("mousedown", (e) => {
     let m = getMouse(e)
     track.x = m[0];
     track.y = m[1];
 })
+let moved = false
+canvas.addEventListener("mouseup",(e)=>{
+    if(!moved){
+        let m = getMouse(e);
+        let p = ce.view2World(m);
+        ce.clearLayers(["select"])
+        let ents = findEntitiesByHitPoint(p);
+    
+    
+        ents.forEach(e => {
+            let vessel = e.agreement._vessel
+            let pos = vessel.pos;
+            let bbox = vessel.construct.getBBox();
+    
+            let g = ce.createElement("g")
+            d3.select(g)
+                .append("rect")
+                .attr("x", bbox.x + pos[0])
+                .attr("y", bbox.y + pos[1])
+                .attr("width", bbox.width)
+                .attr("height", bbox.height)
+                .attr("stroke", "white")
+                .attr("stroke-dasharray", 3)
+                .attr("fill", "none")
+    
+            ce.addElement(g, "select");
+    
+        })
+    }
+    moved  =false;
+})
 
 canvas.addEventListener("mousemove", (e) => {
     let m = getMouse(e)
     if (e.buttons == 1) {
-
-
+        moved = true;
         let dv = ce.toWorldScale([track.x - m[0], track.y - m[1]])
         let pos = ce.pos;
         pos[0] += dv[0];
