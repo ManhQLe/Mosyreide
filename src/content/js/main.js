@@ -63,16 +63,21 @@ function findEntities(fx) {
     return col;
 }
 
-function findEntitiesByHitPoint(p) {
-
+function findEntitiesByRegion(rect) {
     return findEntities(e => {
         let vessel = e.agreement._vessel
         let pos = vessel.pos;
         let bbox = vessel.construct.getBBox();
-        return (GEO.rectOverlap({ x: bbox.x + pos[0], y: bbox.y + pos[1], w: bbox.width, h: bbox.height },
-            { x: p[0], y: p[1], w: 0, h: 0 }
+        console.log(rect)
+        return (GEO.rectOverlap(
+            { x: bbox.x + pos[0], y: bbox.y + pos[1], w: bbox.width, h: bbox.height },
+            rect
         ))
     })
+}
+
+function findEntitiesByHitPoint(p) {
+    return findEntitiesByRegion({ x: p[0], y: p[1], w: 0, h: 0 })
 }
 
 function getMouse(e) {
@@ -102,20 +107,20 @@ canvas.addEventListener("mousedown", (e) => {
     track.x = m[0];
     track.y = m[1];
 })
-let moved = false
-canvas.addEventListener("mouseup",(e)=>{
-    if(!moved){
+let spanned = false
+canvas.addEventListener("mouseup", (e) => {
+    if (!spanned) {
         let m = getMouse(e);
         let p = ce.view2World(m);
         ce.clearLayers(["select"])
         let ents = findEntitiesByHitPoint(p);
-    
-    
+
+
         ents.forEach(e => {
             let vessel = e.agreement._vessel
             let pos = vessel.pos;
             let bbox = vessel.construct.getBBox();
-    
+
             let g = ce.createElement("g")
             d3.select(g)
                 .append("rect")
@@ -126,25 +131,34 @@ canvas.addEventListener("mouseup",(e)=>{
                 .attr("stroke", "white")
                 .attr("stroke-dasharray", 3)
                 .attr("fill", "none")
-    
+
             ce.addElement(g, "select");
-    
+
         })
     }
-    moved  =false;
+    spanned = false;
 })
 
 canvas.addEventListener("mousemove", (e) => {
     let m = getMouse(e)
     if (e.buttons == 1) {
-        moved = true;
+
         let dv = ce.toWorldScale([track.x - m[0], track.y - m[1]])
-        let pos = ce.pos;
-        pos[0] += dv[0];
-        pos[1] += dv[1];
-        track.x = m[0];
-        track.y = m[1];
-        ce.pos = pos;
+
+        if (e.shiftKey) {
+            let p = ce.view2World(m);
+            let p2 = ce.view2World([track.x,track.y]);
+            
+        }
+        else {
+            spanned = true;
+            let pos = ce.pos;
+            pos[0] += dv[0];
+            pos[1] += dv[1];
+            track.x = m[0];
+            track.y = m[1];
+            ce.pos = pos;
+        }
     }
 })
 
