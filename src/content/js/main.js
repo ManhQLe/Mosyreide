@@ -1,7 +1,7 @@
 
 let ce = new CE({
     canvas: document.getElementById("main-canvas"),
-    layers: ["main", "select"]
+    layers: ["main", "visual"]
 })
 
 class SVGVessel {
@@ -28,7 +28,6 @@ class SVGVessel {
 }
 
 var entities = [];
-let selEntities = [];
 let zoomRate = .15;
 let canvas = ce.agreement.canvas;
 let track = {
@@ -53,7 +52,6 @@ function createRClay(pos) {
     })
     entities.push(clay);
     return clay;
-
 }
 function findEntities(fx) {
     let col = [];
@@ -107,120 +105,12 @@ canvas.addEventListener("mousedown", (e) => {
     track.x = m[0];
     track.y = m[1];
 })
-let spanned = false
+
 canvas.addEventListener("mouseup", (e) => {
-    if (!spanned) {
-        let m = getMouse(e);
-        let p = ce.view2World(m);
-        ce.clearLayers(["select"])
-        let ents = findEntitiesByHitPoint(p);
-
-
-        ents.forEach(e => {
-            let vessel = e.agreement._vessel
-            let pos = vessel.pos;
-            let bbox = vessel.construct.getBBox();
-
-            let g = ce.createElement("g")
-            d3.select(g)
-                .append("rect")
-                .attr("x", bbox.x + pos[0])
-                .attr("y", bbox.y + pos[1])
-                .attr("width", bbox.width)
-                .attr("height", bbox.height)
-                .attr("stroke", "white")
-                .attr("stroke-dasharray", 3)
-                .attr("fill", "none")
-
-            ce.addElement(g, "select");
-
-        })
-    }
-    spanned = false;
+   
 })
 
 canvas.addEventListener("mousemove", (e) => {
     let m = getMouse(e)
-    if (e.buttons == 1) {
-
-        let dv = ce.toWorldScale([track.x - m[0], track.y - m[1]])
-
-        if (e.shiftKey) {
-            let p = ce.view2World(m);
-            let p2 = ce.view2World([track.x,track.y]);
-            
-        }
-        else {
-            spanned = true;
-            let pos = ce.pos;
-            pos[0] += dv[0];
-            pos[1] += dv[1];
-            track.x = m[0];
-            track.y = m[1];
-            ce.pos = pos;
-        }
-    }
 })
-
-function Render() {
-    let l = ce.getLayer();
-
-    d3.select(l).append("circle")
-        .attr("cx", 50)
-        .attr("cy", 50)
-        .attr('r', 10)
-        .attr("fill", "#f1c40f")
-
-    d3.select(l).append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 100)
-        .attr("height", 120)
-        .attr("stroke", "#ecf0f1")
-        .attr("fill", "none")
-
-    d3.select(l).append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 100)
-        .attr("height", 100)
-        .attr("stroke", "#e74c3c")
-        .attr("fill", "none")
-
-    d3.select(l).append("rect")
-        .attr("x", 50)
-        .attr("y", 50)
-        .attr("width", 50)
-        .attr("height", 50)
-        .attr("stroke", "#f1c40f")
-        .attr("fill", "none")
-
-
-    // d3.select(l).append("circle")
-    // .attr("cx",50)
-    // .attr("cy",100)
-    // .attr('r',50)
-    // .attr("fill","#e74c3c")
-
-    d3.select(l).append("rect")
-        .attr("x", 50)
-        .attr("y", 50)
-        .attr("width", 50)
-        .attr("height", 100)
-        .attr("stroke", "#9b59b6")
-        .attr("fill", "none")
-
-    // ce.zoomWRect({
-    //     x:50,
-    //     y:50,
-    //     w:50,
-    //     h:100
-    // },1)
-    //ce.toCenter();
-    // ce.lookAt([0,0])
-}
-
-Render();
-
-
 
