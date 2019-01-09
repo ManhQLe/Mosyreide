@@ -36,5 +36,5 @@ const GEO = {
         });
         
         return [minP, maxP]
-    }        
+    }
 }

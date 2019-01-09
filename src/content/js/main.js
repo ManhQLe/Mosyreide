@@ -4,6 +4,20 @@ let ce = new CE({
     layers: ["main", "visual"]
 })
 
+let EV = new EffectVisualizer({
+    CE:ce,
+});
+let SV = new StructureVisualizer({CE:ce});
+
+let UAI = new UIActionManager({
+    CE:ce,
+    UI:{        
+        CANVAS:ce.agreement.canvas
+    }
+});
+let SM = new StructureManager();
+
+
 class SVGVessel {
     constructor(svgConstruct, pos) {
         let position = pos || [0, 0]
@@ -85,13 +99,13 @@ function getMouse(e) {
     return [x, y]
 }
 
-d3.select(canvas).on("drop", (e = d3.event) => {
-    e.preventDefault();
-    let p = ce.view2World(getMouse(e));
-    let c = createRClay(p);
-    ce.addElement(c.agreement._vessel.construct);
+// d3.select(canvas).on("drop", (e = d3.event) => {
+//     e.preventDefault();
+//     let p = ce.view2World(getMouse(e));
+//     let c = createRClay(p);
+//     ce.addElement(c.agreement._vessel.construct);
 
-})
+// })
 
 canvas.addEventListener("wheel", (e) => {
     let m = getMouse(e)
