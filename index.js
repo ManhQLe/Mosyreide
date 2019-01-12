@@ -10,7 +10,9 @@ function translate(from,to){
 		if(err)
 			console.log(err)
 		else
-			less.render(data, (e, out) => {
+			less.render(data,{
+				filename: path.resolve(from)
+			}, (e, out) => {
 				if (e)
 					console.log(e);
 				else
@@ -26,25 +28,25 @@ lessMap.forEach(p=>{
 	})	
 })
 
-gulp.watch('./src/public/app/less/*.less').on("change", d => {
-	let p = d.path.split("\\");
-	let filename = p[p.length - 1].split(".")[0];
+// gulp.watch('./src/public/app/less/*.less').on("change", d => {
+// 	let p = d.path.split("\\");
+// 	let filename = p[p.length - 1].split(".")[0];
 
-	fs.readFile(d.path, 'utf8', function (err, data) {
-		if(err)
-			console.log(err)
-		else
-			less.render(data, (e, out) => {
-				if (e)
-					console.log(e);
-				else {				
-					fs.writeFile(path.join(__dirname, "src/public/app/css", filename + ".css")
-					,out.css,'utf-8',()=>{})
-				}
-			})
+// 	fs.readFile(d.path, 'utf8', function (err, data) {
+// 		if(err)
+// 			console.log(err)
+// 		else
+// 			less.render(data, (e, out) => {
+// 				if (e)
+// 					console.log(e);
+// 				else {				
+// 					fs.writeFile(path.join(__dirname, "src/public/app/css", filename + ".css")
+// 					,out.css,'utf-8',()=>{})
+// 				}
+// 			})
 
-	});
-})
+// 	});
+// })
 
 var params = {
     port: 8181, // Set the server port. Defaults to 8080.

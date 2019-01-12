@@ -1,42 +1,52 @@
-html,body{
+@import "./vars.less";
+html,
+body {
     padding: 0;
     margin: 0;
-    width:100%;
+    width: 100%;
     height: 100%;
-    overflow:hidden;
+    overflow: hidden;
 }
 
-#main-canvas{
+#main-canvas {
     width: 100%;
-    height:100%;
-    overflow:hidden;
+    height: 100%;
+    overflow: hidden;
     background-color: #000000;
 }
 
-.layout-table{
+.layout-table {
     height: 100%;
     display: flex;
     flex-direction: column;
     >.layout-row {
         flex-direction: row;
         display: flex;
-        &[shrink]{
-            flex-grow: 0;    
+        &[shrink] {
+            flex-grow: 0;
         }
-        &[expand]{
-            flex-grow:1;                    
-        }   
+        &[expand] {
+            flex-grow: 1;
+        }
     }
 }
 
-.docked-bar-container{
-    width:15em;
+.docked-bar-container {
+    width: 15em;
 }
 
-.bar-container{
+.bar-container {
     position: relative;
     overflow: visible;
 }
-.canvas-container{
+
+.canvas-container {
     width: 100%;
-}    
+}
+
+////////////////////////////////////////
+.manage-clay-vessel {
+    stroke: @Abestos;
+    stroke-width: 2px;
+    fill: @Wetasphalt;
+}
