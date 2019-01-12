@@ -4,9 +4,14 @@ const HID_NAME = {
     CANVAS:"CANVAS"
 }
 
+const COMMAND = {
+    CREATE:0,
+    VIZVESSEL:1
+}
+
 const UTIL = {
-    getMouse:function(){
-        var rect = canvas.getBoundingClientRect();
+    getRelativeMouse:function(dom,e){
+        var rect = dom.getBoundingClientRect();
         var x = e.clientX - rect.left; //x position within the element.
         var y = e.clientY - rect.top;  //y position within the element.
         return [x, y]
