@@ -10,10 +10,11 @@ class UIActionManager extends mosyrejs2.RClay {
 
         d3.select(UI[HID_NAME.CANVAS]).on("drop", function(e=d3.event){
             e.preventDefault();
-            let pos = UTIL.getRelativeMouse(CE.agreement.canvas, e)
+            let pos = CE.view2World(UTIL.getRelativeMouse(CE.agreement.canvas, e))
+            
             center[OUT] = {
                 command: COMMAND.CREATE,
-                data:pos
+                data:{pos}
             }
         });
     }
