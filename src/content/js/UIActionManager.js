@@ -34,5 +34,37 @@ class UIActionManager extends mosyrejs2.RClay {
                 data:{pos}
             }
         })
+
+       
+        let p1,p2;
+
+        d3.select(canvas).on("mousemove",function(e = d3.event){
+            //Alt key is to move canvas
+
+            if(e.buttons === 1) {  
+                p2 = UTIL.getRelativeMouse(canvas,e);
+                !p1 && (p1 = p2);
+
+                if(e.altKey){
+                    
+                    let d = [0,0]
+                    vec2.sub(d,p1,p2);
+                    d =  CE.toWorldScale(d);
+                    vec2.add(CE.pos,CE.pos,d);
+                    CE.pos = CE.pos;
+                    p1 = p2;
+                }
+                else{
+                    
+                }
+            }
+            else
+            {
+                p1 = p2 = null;    
+            }
+            
+        })
     }
+
+   
 }

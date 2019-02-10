@@ -6,7 +6,10 @@ const HID_NAME = {
 
 const COMMAND = {
     CREATECLAY:0,
-    SELECTCLAY:1
+    SELECTCLAY:1,
+
+    CLEAR:2,
+    VIZRECTREGION:3
 }
 
 const UTIL = {
