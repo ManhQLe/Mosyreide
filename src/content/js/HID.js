@@ -5,8 +5,8 @@ const HID_NAME = {
 }
 
 const COMMAND = {
-    CREATE:0,
-    VIZVESSEL:1
+    CREATECLAY:0,
+    SELECTCLAY:1
 }
 
 const UTIL = {

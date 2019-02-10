@@ -5,7 +5,7 @@ class RealityManager extends mosyrejs2.RClay {
         agreement.sensorPoints = ["IN"]
         this.__.CLAYS = []
         this.__.Link = new mosyrejs2.Conduit();
-        this.__.Link.link(this,"X");
+        this.__.Link.link(this,"MY_WORLD");
     }
 
     onResponse(cp){
@@ -17,15 +17,17 @@ class RealityManager extends mosyrejs2.RClay {
         let data = msg.data;
 
         switch(msg.command){
-            case COMMAND.CREATE:
+            case COMMAND.CREATECLAY:
                 let c = new ManagedClay({
                     "pos":data.pos,
-                    "dim":[300,150],
+                    "dim":[90,90],
                     CE
                 })
                 CLAYS.push(c);
-                //CE.addElement(c.Vessel);
-                Link.link(c,"OUT");
+                Link.link(c,"IN");
+                break;
+            case COMMAND.SELECTCLAY:
+                
         }        
     }
 }
@@ -33,10 +35,10 @@ class RealityManager extends mosyrejs2.RClay {
 RealityManager.CREATION = {
     createVessel:function(pos,dim,g){        
         d3.select(g)
-        .attr("tranform",`translate(${pos[0]},${pos[0]})`)
+        .attr("transform",`translate(${pos[0]},${pos[1]})`)
         .append("rect")
-        .attr("x",dim[0]/2.0)
-        .attr("y",dim[1]/2.0)
+        .attr("x",-dim[0]/2.0)
+        .attr("y",-dim[1]/2.0)
         .attr("width",dim[0])
         .attr("height",dim[1])
         .attr("class","manage-clay-vessel")
@@ -55,6 +57,7 @@ class ManagedClay extends mosyrejs2.RClay{
         agr.sensorPoints = ["IN"]
         this.Id = Symbol();        
         this.Vessel = RealityManager.CREATION.createVessel(agr.pos,agr.dim,CE.createElement("g"));
-        this.Vessel.Author = this;
+        this.Vessel.Entity = this;
+        CE.addElement(this.Vessel)
     }
 }

@@ -11,7 +11,7 @@ let EV = new EffectVisualizer({
 let UAI = new UIActionManager({
     CE:ce,
     UI:{        
-        CANVAS:ce.agreement.canvas
+        [HID_NAME.CANVAS]:ce.agreement.canvas
     }
 });
 let RE = new RealityManager({
