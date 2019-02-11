@@ -1,8 +1,8 @@
 class EffectVisualizer extends Visualizer {
     constructor(agr) {
         super(agr);
-        this.sensorPoints = ["IN"]
-    }
+        agr.sensorPoints = ["IN"]
+    }    
 
     onResponse(cp) {
         let E = this.__.E;
@@ -15,15 +15,8 @@ class EffectVisualizer extends Visualizer {
             case COMMAND.VIZRECTREGION:
                 let p1 = data.p1;
                 let p2 = data.p2;
-
-                this._drawRectRegion(data)
-
-
-                if (E[id]) {
-                    g = E[id]
-                } else {
-
-                }
+                this._drawRectRegion(data);
+                break;
         }
     }
 
@@ -47,15 +40,18 @@ class EffectVisualizer extends Visualizer {
 
         let id = data.id;
         let layer = this._layer();
+
         var binded = d3.select(layer)
-            .select("g").data([data], function (d) {
+            .selectAll("g").data([data], function (d) {
                 return d.id
             });
 
-        binded.attr("d",genfx)
+        binded.select("path").attr("d",genfx)
 
         binded.enter()
+            .append("g")
             .append("path")
+            .attr("class","viz-rect-region")
             .attr("d", genfx)
 
     }

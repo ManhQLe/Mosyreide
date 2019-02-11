@@ -5,7 +5,7 @@ let ce = new CE({
 })
 
 let EV = new EffectVisualizer({
-    CE:ce,
+    CE:ce
 });
 
 let UAI = new UIActionManager({
@@ -20,3 +20,4 @@ let RE = new RealityManager({
 
 
 mosyrejs2.Conduit.createLink([UAI,"OUT",RE,"IN"])
+mosyrejs2.Conduit.createLink([UAI,"OUTVIZ",EV,"IN"])
