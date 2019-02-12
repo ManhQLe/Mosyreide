@@ -19,5 +19,5 @@ let RE = new RealityManager({
 });
 
 
-mosyrejs2.Conduit.createLink([UAI,"OUT",RE,"IN"])
-mosyrejs2.Conduit.createLink([UAI,"OUTVIZ",EV,"IN"])
+mosyrejs2.Conduit.createLink([UAI,UIActionManager.OUTREAL,RE,"IN"])
+mosyrejs2.Conduit.createLink([UAI,UIActionManager.OUTVIZ,EV,"IN"])

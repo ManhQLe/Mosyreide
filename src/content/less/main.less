@@ -1,4 +1,5 @@
 @import "./vars.less";
+
 html,
 body {
     padding: 0;
@@ -19,12 +20,15 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
+
     >.layout-row {
         flex-direction: row;
         display: flex;
+
         &[shrink] {
             flex-grow: 0;
         }
+
         &[expand] {
             flex-grow: 1;
         }
@@ -46,15 +50,24 @@ body {
 
 ////////////////////////////////////////
 .manage-clay-vessel {
-    stroke:white;
+    stroke: white;
     stroke-width: 2px;
-    fill: @Concrete;    
+    fill: @Concrete;
 }
 
 
-.viz-rect-region{
-    stroke:white;
-    stroke-width: 1px;
-    fill: none;
-    stroke-dasharray: 10 7;
+.viz-rect-region {
+    &>path {
+        stroke: white;
+        stroke-width: 1px;
+        fill: none;
+        stroke-dasharray: 10 7;
+        animation: ant 3s linear infinite;
+    }
+}
+
+@keyframes ant {
+    to {
+        stroke-dashoffset: 100;
+    }
 }

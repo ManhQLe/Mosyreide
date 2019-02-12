@@ -13,15 +13,23 @@ class EffectVisualizer extends Visualizer {
             case COMMAND.CLEAR:
                 break;
             case COMMAND.VIZRECTREGION:
-                let p1 = data.p1;
-                let p2 = data.p2;
                 this._drawRectRegion(data);
                 break;
+            case COMMAND.VIZREMOVE:
+                this._removeElement(data);
         }
     }
 
     _layer() {
         return this.agreement.CE.getLayer("visual");
+    }
+
+    _removeElement(data){
+        let layer = this._layer();
+
+        d3.select(layer)
+            .selectAll("g.viz-rect-region").filter(d=>d.id === data.id).remove();
+
     }
 
     _drawRectRegion(data) {
@@ -42,16 +50,14 @@ class EffectVisualizer extends Visualizer {
         let layer = this._layer();
 
         var binded = d3.select(layer)
-            .selectAll("g").data([data], function (d) {
-                return d.id
-            });
+            .selectAll("g.viz-rect-region").filter(function(d){ return d.id === data.id}).data([data]);
 
         binded.select("path").attr("d",genfx)
 
         binded.enter()
             .append("g")
-            .append("path")
-            .attr("class","viz-rect-region")
+            .attr("class","viz-rect-region")            
+            .append("path")            
             .attr("d", genfx)
 
     }
