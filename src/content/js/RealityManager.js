@@ -4,19 +4,20 @@ class RealityManager extends mosyrejs2.RClay {
         let agreement = this.agreement;
         agreement.sensorPoints = ["IN"]
         this.__.CLAYS = []
+        this.__.SELECTCLAYS = [],
         this.__.InnerLink = new mosyrejs2.Conduit();
         this.__.InnerLink.link([this, RealityManager.SIMWORLD]);
     }
 
     onResponse(cp) {
         let {
-            OUTVIZ,
+            VIZWORLD,
             SIMWORLD
         } = RealityManager;
         let center = this.center;
         let CE = this.agreement.CE;
         let {
-            CLAYS,
+            CLAYS, SELECTCLAYS,
             InnerLink
         } = this.__;
 
@@ -25,15 +26,19 @@ class RealityManager extends mosyrejs2.RClay {
 
         switch (msg.command) {
             case COMMAND.CREATECLAY:
-                let c = new ManagedClay({
-                    "pos": data.pos,
+                let clay = new ManagedClay({
+                    "pos": CE.view2World(data.pos),
                     "dim": [90, 90],
-                    CE
+                    "id":Symbol()
                 })
-                CLAYS.push(c);
-                InnerLink.link([c, ManagedClay.IN]);
+                CLAYS.push(clay);
+                InnerLink.link([clay, ManagedClay.IN]);
+
+                center[VIZWORLD] = UTIL.createCommand(COMMAND.VIZCLAY,{clay})
+
                 break;
             case COMMAND.SELECTCLAY:
+                SELECTCLAYS.splice(0,SELECTCLAYS.length);
                 data.p1 = CE.view2World(data.p1);
                 data.p2 = CE.view2World(data.p2);
                 center[SIMWORLD] = msg;
@@ -42,35 +47,20 @@ class RealityManager extends mosyrejs2.RClay {
 }
 
 
-RealityManager.OUTVIZ = "OUTVIZ"
+RealityManager.VIZWORLD = "VIZWORLD"
 RealityManager.SIMWORLD = "SIMWORLD"
 RealityManager.IN = "IN"
 
-RealityManager.CREATION = {
-    createVessel: function (pos, dim, g) {
-        d3.select(g)
-            .attr("transform", `translate(${pos[0]},${pos[1]})`)
-            .append("rect")
-            .attr("x", -dim[0] / 2.0)
-            .attr("y", -dim[1] / 2.0)
-            .attr("width", dim[0])
-            .attr("height", dim[1])
-            .attr("class", "manage-clay-vessel")
-
-        return g;
-    }
+const INNERCOMMAND = {
+    IAMSELECTED: Symbol()
 }
+
 
 class ManagedClay extends mosyrejs2.RClay {
     constructor(agr) {
         super(agr);
-        let CE = agr.CE;
         this.defineAgreement("dim", [100, 100])
-        agr.sensorPoints = ["IN"]
-        this.Id = Symbol();
-        this.Vessel = RealityManager.CREATION.createVessel(agr.pos, agr.dim, CE.createElement("g"));
-        this.Vessel.Entity = this;
-        CE.addElement(this.Vessel)
+        agr.sensorPoints = [ManagedClay.IN]
     }
 
     onResponse(cp) {
@@ -88,10 +78,8 @@ class ManagedClay extends mosyrejs2.RClay {
                     dim: agr.dim
                 }
                 let yes = GEO.rectOverlapVec(GEO.toBoundingBox(data.p1,data.p2) ,myBB)
-
-                console.log(yes);
+                console.log(yes)
                 break;
-
         }
     }
 }

@@ -25,10 +25,13 @@ mosyrejs2.Conduit.createLink([
     RE,RealityManager.IN,    
 ])
 
-mosyrejs2.Conduit.createLink([
+
+let c1 = mosyrejs2.Conduit.createLink([
     UAI,UIActionManager.OUTVIZ,
     EV,EffectVisualizer.IN,
-    RE,RealityManager.OUTVIZ
+    RE,RealityManager.VIZWORLD
 ])
+
+console.log(c1.contacts)
 
 

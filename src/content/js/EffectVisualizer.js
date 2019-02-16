@@ -7,11 +7,13 @@ class EffectVisualizer extends Visualizer {
     }    
 
     onResponse(cp) {
+ 
         let CE = this.CE;
 
         var msg = this.center["IN"];
+
         var data = msg.data;
-        switch (msg.Command) {
+        switch (msg.command) {
             case COMMAND.VIZCLEAR:
                 break;
             case COMMAND.VIZRECTREGION:
@@ -32,6 +34,10 @@ class EffectVisualizer extends Visualizer {
                 dx = CE.toWorldScale(dx);
                 vec2.add(dx,CE.pos,dx);
                 CE.pos = dx;
+                break;
+            case COMMAND.VIZCLAY:
+
+                this._drawVessel(data);
         }
     }
     
@@ -77,6 +83,36 @@ class EffectVisualizer extends Visualizer {
             .append("path")            
             .attr("d", genfx)
 
+    }
+
+    _drawVessel(data) {
+        let layer = this.CE.getLayer(EffectVisualizer.WorldLayer);        
+        let {pos,dim,id} = data.clay.agreement;
+        let attrs = {
+            "x":-dim[0] *.5,
+            "y":-dim[1] *.5,
+            "width": dim[0],
+            "height": dim[1]
+        }
+        let transform = `translate(${pos[0]},${pos[1]})`
+
+        var binded = d3.select(layer)
+            .selectAll("g.manage-clay-vessel")
+            .filter(d=>d.clay.agreement.id === id)
+            .data([data])
+
+        binded.attr("transform",transform )
+            .select("rect")
+            .attrs(attrs)
+
+        binded.enter()
+            .append("g")
+            .attrs({
+                "class":"manage-clay-vessel",
+                "transform": transform
+            })
+            .append("rect")
+            .attrs(attrs)
     }
 }
 
