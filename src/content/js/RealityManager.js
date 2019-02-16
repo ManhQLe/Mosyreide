@@ -34,12 +34,13 @@ class RealityManager extends mosyrejs2.RClay {
                 InnerLink.link([c, ManagedClay.IN]);
                 break;
             case COMMAND.SELECTCLAY:
+                data.p1 = CE.view2World(data.p1);
+                data.p2 = CE.view2World(data.p2);
                 center[SIMWORLD] = msg;
-           
-
         }
     }
 }
+
 
 RealityManager.OUTVIZ = "OUTVIZ"
 RealityManager.SIMWORLD = "SIMWORLD"
@@ -82,13 +83,11 @@ class ManagedClay extends mosyrejs2.RClay {
             case COMMAND.SELECTCLAY:
                 let pos = [0, 0];
                 vec2.add(pos, agr.pos, [-agr.dim[0] * .5, -agr.dim[1] * .5])
-                let yes = GEO.rectOverlapVec({
-                    pos: data.pos,
-                    dim: data.dim
-                }, {
+                let myBB = {
                     pos: pos,
                     dim: agr.dim
-                })
+                }
+                let yes = GEO.rectOverlapVec(GEO.toBoundingBox(data.p1,data.p2) ,myBB)
 
                 console.log(yes);
                 break;

@@ -1,17 +1,18 @@
-
+const canvas = document.getElementById("main-canvas")
+ 
 let ce = new CE({
-    canvas: document.getElementById("main-canvas"),
-    layers: ["main", "visual"]
+    canvas,
+    layers: [EffectVisualizer.WorldLayer, EffectVisualizer.EffectLayer]
 })
 
 let EV = new EffectVisualizer({
+    canvas,
     CE:ce
 });
 
 let UAI = new UIActionManager({
-    CE:ce,
     UI:{        
-        [HID_NAME.CANVAS]:ce.agreement.canvas
+        [HID_NAME.CANVAS]:canvas
     }
 });
 let RE = new RealityManager({

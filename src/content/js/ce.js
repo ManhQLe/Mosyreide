@@ -19,7 +19,7 @@ class CE extends mosyrejs2.Clay {
             }
         })
         this.defineAgreement("canvas", document.createElement("svg"))
-
+        
         this.init()
 
         if (agr.zoom !== undefined)
@@ -27,6 +27,18 @@ class CE extends mosyrejs2.Clay {
         if (agr.pos !== undefined)
             this.pos = agr.pos
 
+    }
+
+    disableTransform(layerName){
+        this.__.layers.every(l=>{
+            if(l.name === layerName){
+                l.transformable = 0;
+                l.layer.removeAttribute("transform");
+                return false;
+            }
+            return true;
+        })
+        
     }
 
     init(agr) {
@@ -39,7 +51,8 @@ class CE extends mosyrejs2.Clay {
             let layer = document.createElementNS(canvas.namespaceURI, "g")
             this.__.layers.push({
                 name,
-                layer
+                layer,
+                transformable:1
             })
             canvas.appendChild(layer);
         });
@@ -116,7 +129,7 @@ class CE extends mosyrejs2.Clay {
     _applyTransforms() {
         let transform = [`scale(${this.zoom})`, `translate(${-this.pos[0]}, ${-this.pos[1]})`].join(" ")
         this.__.layers.forEach(l => {
-            l.layer.setAttribute("transform", transform);
+            l.transformable && l.layer.setAttribute("transform", transform);
         })
 
     }

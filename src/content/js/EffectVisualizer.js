@@ -2,40 +2,53 @@ class EffectVisualizer extends Visualizer {
     constructor(agr) {
         super(agr);
         agr.sensorPoints = ["IN"]
+        this.CE = this.agreement.CE;
+        this.CE.disableTransform(EffectVisualizer.EffectLayer);
     }    
 
     onResponse(cp) {
-        let E = this.__.E;
+        let CE = this.CE;
 
         var msg = this.center["IN"];
         var data = msg.data;
         switch (msg.Command) {
-            case COMMAND.CLEAR:
+            case COMMAND.VIZCLEAR:
                 break;
             case COMMAND.VIZRECTREGION:
-                this._drawRectRegion(data,"viz-rect-region");
+                this._drawRectRegion(data,"viz-rect-region",EffectVisualizer.EffectLayer);
                 break;
-            case COMMAND.VIZREMOVE:
+            case COMMAND.VIZREMOVE:                
                 this._removeElement(data);
                 break;
             case COMMAND.VIZSELECT:
-                this._drawRectRegion(data,"viz-select");
+                this._drawRectRegion(data,"viz-select",EffectVisualizer.WorldLayer);
+                break;
+            case COMMAND.VIZZOOM:
+                CE.zoomTo(CE.zoom*(data.zoomRate + 1),data.p)
+                break;
+            case COMMAND.VIZSPAN:
+                let dx = [0,0]
+                vec2.sub(dx,data.p1,data.p2);
+                dx = CE.toWorldScale(dx);
+                vec2.add(dx,CE.pos,dx);
+                CE.pos = dx;
         }
     }
+    
 
-    _layer() {
-        return this.agreement.CE.getLayer("visual");
+    _effectLayer() {
+        return this.CE.getLayer(EffectVisualizer.EffectLayer);
     }
 
     _removeElement(data){
-        let layer = this._layer();
+        let layer = this._effectLayer();
 
         d3.select(layer)
             .selectAll("g").filter(d=>d.id === data.id).remove();
 
     }
 
-    _drawRectRegion(data, className) {
+    _drawRectRegion(data, className,layerName) {
         let genfx = (d)=> {
             let {
                 p1,
@@ -49,8 +62,7 @@ class EffectVisualizer extends Visualizer {
             ].join("");
         }
 
-        let id = data.id;
-        let layer = this._layer();
+        let layer = this.CE.getLayer(layerName);
 
         var binded = d3.select(layer)
             .selectAll(`g.${className}`)
@@ -68,4 +80,6 @@ class EffectVisualizer extends Visualizer {
     }
 }
 
+EffectVisualizer.WorldLayer = "WorldLayer",
+EffectVisualizer.EffectLayer = "EffectLayer",
 EffectVisualizer.IN = "IN"

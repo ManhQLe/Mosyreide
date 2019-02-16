@@ -8,12 +8,15 @@ const COMMAND = {
     CREATECLAY:0,
     SELECTCLAY:1,
 
-    CLEAR:2,
-    VIZRECTREGION:3,    
-    VIZREMOVE:4,
-    VIZSELECT:5,
-    VIZZOOM:6,
-    VIZSPAN:7
+
+    VIZZOOM:2,
+    VIZSPAN:3,
+    VIZCLEAR:4,    
+    VIZRECTREGION:5,
+    VIZREMOVE:6,
+    VIZSELECT:7,
+    VIZCLAY:8
+    
 }
 
 const UTIL = {
