@@ -10,6 +10,16 @@ const GEO = {
         return this.isOverlap([r1.x,r1.x+r1.w],[r2.x,r2.x+r2.w])
             && this.isOverlap([r1.y,r1.y+r1.h],[r2.y,r2.y+r2.h])
     },
+    rectOverlapVec(r1,r2){
+        return this.isOverlap([r1.pos[0],r1.pos[0]+r1.dim[0]],[r2.pos[0],r2.pos[0]+r2.dim[0]])
+            && this.isOverlap([r1.pos[1],r1.pos[1]+r1.dim[1]],[r2.pos[1],r2.pos[1]+r2.dim[1]])
+    },
+    toBoundingBox(p1,p2){        
+        return {
+            pos:[Math.min(p1[0],p2[0]),Math.min(p1[1],p2[1])],
+            dim:[Math.abs(p1[0]-p2[0]),Math.abs(p1[1]-p2[1])]
+        }
+    },
     solveQuad(a,b,c){
         let delta = b * b - 4 * a * c;
         if (delta < 0)

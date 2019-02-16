@@ -19,7 +19,7 @@
     "live-server": "^1.2.0"
   },
   "dependencies": {
-    "mosyrejs2": "^1.0.2",
+    "mosyrejs2": "^1.1.2",
     "npm": "^6.5.0"
   }
 }

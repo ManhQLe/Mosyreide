@@ -13,10 +13,13 @@ class EffectVisualizer extends Visualizer {
             case COMMAND.CLEAR:
                 break;
             case COMMAND.VIZRECTREGION:
-                this._drawRectRegion(data);
+                this._drawRectRegion(data,"viz-rect-region");
                 break;
             case COMMAND.VIZREMOVE:
                 this._removeElement(data);
+                break;
+            case COMMAND.VIZSELECT:
+                this._drawRectRegion(data,"viz-select");
         }
     }
 
@@ -28,11 +31,11 @@ class EffectVisualizer extends Visualizer {
         let layer = this._layer();
 
         d3.select(layer)
-            .selectAll("g.viz-rect-region").filter(d=>d.id === data.id).remove();
+            .selectAll("g").filter(d=>d.id === data.id).remove();
 
     }
 
-    _drawRectRegion(data) {
+    _drawRectRegion(data, className) {
         let genfx = (d)=> {
             let {
                 p1,
@@ -50,15 +53,19 @@ class EffectVisualizer extends Visualizer {
         let layer = this._layer();
 
         var binded = d3.select(layer)
-            .selectAll("g.viz-rect-region").filter(function(d){ return d.id === data.id}).data([data]);
+            .selectAll(`g.${className}`)
+            .filter(function(d){ return d.id === data.id})
+            .data([data]);
 
         binded.select("path").attr("d",genfx)
 
         binded.enter()
             .append("g")
-            .attr("class","viz-rect-region")            
+            .attr("class",className)            
             .append("path")            
             .attr("d", genfx)
 
     }
 }
+
+EffectVisualizer.IN = "IN"

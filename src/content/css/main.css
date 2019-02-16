@@ -49,6 +49,11 @@ body {
   stroke-dasharray: 10 7;
   animation: ant 3s linear infinite;
 }
+.viz-select > path {
+  stroke: #e67e22;
+  stroke-width: 1px;
+  fill: none;
+}
 @keyframes ant {
   to {
     stroke-dashoffset: 100;

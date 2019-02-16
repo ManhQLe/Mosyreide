@@ -9,8 +9,11 @@ const COMMAND = {
     SELECTCLAY:1,
 
     CLEAR:2,
-    VIZRECTREGION:3,
-    VIZREMOVE:4
+    VIZRECTREGION:3,    
+    VIZREMOVE:4,
+    VIZSELECT:5,
+    VIZZOOM:6,
+    VIZSPAN:7
 }
 
 const UTIL = {
