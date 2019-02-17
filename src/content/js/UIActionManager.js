@@ -4,17 +4,27 @@ class UIActionManager extends mosyrejs2.RClay {
         this.defineAgreement("CE");
         this.defineAgreement("UI");
 
+        this.STATE = {
+            MODE: IMODE.NORMAL,
+            isSpanning: false,
+            isMarqueeing: false,
+            lastPoint: null,
+            currentPoint: null,
+            pivotPoint: null,
+            marqueeId: Symbol()
+        }
+
+
+        let me = this;
+
         let UI = this.agreement.UI;
         let center = this.center;
-        let {
-            OUTREAL,
-            OUTVIZ
-        } = UIActionManager;
+       
         let canvas = UI[HID_NAME.CANVAS];
 
         d3.select(canvas).on("drop", function (e = d3.event) {
             e.preventDefault();
-            center[OUTREAL] = {
+            center[UIActionManager.OUTREAL] = {
                 command: COMMAND.CREATECLAY,
                 data: {
                     pos: UTIL.getRelativeMouse(canvas, e)
@@ -25,95 +35,128 @@ class UIActionManager extends mosyrejs2.RClay {
         d3.select(canvas).on("wheel", function (e = d3.event) {
             let pos = UTIL.getRelativeMouse(canvas, e);
             let zoomRate = 0.1 * e.wheelDelta / Math.abs(e.wheelDelta)
-            center[OUTVIZ] = {
-                command: COMMAND.VIZZOOM,
-                data: {
-                    p: pos,
-                    zoomRate
-                }
-            }
+            center[OUTVIZ] = UTIL.createCommand(COMMAND.VIZZOOM, {
+                p: pos,
+                zoomRate
+            });
+
         })
 
-
-        let pivotPoint, lastPoint, currentPoint, id = Symbol();
-        let isMarqueeing, isSpanning;
-
-        let isInCanvas = ()=>{
-            return pivotPoint &&
-            pivotPoint[0] >= 0 && pivotPoint[1] >= 0;
-        }
-
         d3.select(document).on("mousedown", function (e = d3.event) {
-            lastPoint = pivotPoint = UTIL.getRelativeMouse(canvas, e)
+            let STATE = me.STATE;
+            STATE.lastPoint = STATE.pivotPoint = UTIL.getRelativeMouse(canvas, e)
+            me.mousedown()
         })
 
         d3.select(document).on("mouseup", function (e = d3.event) {
-           
-            if (isInCanvas() &&
-                (currentPoint[0] === pivotPoint[0] && currentPoint[1] === pivotPoint[1])) {
-                center[OUTREAL] = UTIL.createCommand(COMMAND.SELECTCLAY, {
-                    p1: [...pivotPoint],
-                    p2: [...currentPoint]
-                })
-            }
-
-            if (isMarqueeing) {
-                center[OUTVIZ] = {
-                    command: COMMAND.VIZREMOVE,
-                    data: {
-                        id
-                    }
-                }
-
-                pivotPoint && (center[OUTREAL] = {
-                    command: COMMAND.SELECTCLAY,
-                    data: {
-                        p1: [...pivotPoint],
-                        p2: [...currentPoint]
-                    }
-                })
-
-                pivotPoint = null;
-                id = null;
-                isMarqueeing = false;
-            }
+            me.mouseup();
         })
 
         d3.select(document).on("mousemove", function (e = d3.event) {
+            let STATE = me.STATE;
+            STATE.currentPoint = UTIL.getRelativeMouse(canvas, e);
 
-            currentPoint = UTIL.getRelativeMouse(canvas, e);
-            isMarqueeing = e.buttons === 1 && !e.altKey && isInCanvas()
-            isSpanning = e.buttons === 1 && e.altKey;
+            switch(STATE.MODE){
+                case IMODE.NORMAL:
+                    STATE.isMarqueeing =  e.buttons === 1 &&
+                    !e.altKey && me.isInCanvas()
 
-            if (isMarqueeing) {
-                center[OUTVIZ] = {
-                    command: COMMAND.VIZRECTREGION,
-                    data: {
-                        id,
-                        p1: [...pivotPoint],
-                        p2: [...currentPoint]
-                    }
-                };
-
-            }
-
-            if (isSpanning) {
-                center[OUTVIZ] = {
-                    command: COMMAND.VIZSPAN,
-                    data: {
-                        p1: [...lastPoint],
-                        p2: [...currentPoint]
-                    }
-                }
-                lastPoint = currentPoint;
-            } else {
-                lastPoint = null;
+                    STATE.isSpanning = e.buttons === 1 && e.altKey;
+                    break;
             }
 
 
+            me.mousemove()
         })
     }
+
+    isInCanvas() {
+        let STATE = this.STATE;
+        return STATE.pivotPoint &&
+            STATE.pivotPoint[0] >= 0 && STATE.pivotPoint[1] >= 0;
+
+    }
+
+    mousedown() {
+       
+    }
+
+    mouseup() {
+        let {
+            OUTREAL,
+            OUTVIZ
+        } = UIActionManager;
+
+        let {STATE,center} = this;
+        let {currentPoint, pivotPoint, isMarqueeing, marqueeId} = STATE;
+
+        if (this.isInCanvas() &&
+            (currentPoint[0] === pivotPoint[0] && currentPoint[1] === pivotPoint[1])) {
+            center[OUTREAL] = UTIL.createCommand(COMMAND.SELECTCLAY, {
+                p1: [...pivotPoint],
+                p2: [...currentPoint]
+            })
+        }
+
+        if (isMarqueeing) {
+            center[OUTVIZ] = UTIL.createCommand(COMMAND.VIZREMOVE, {
+                id: marqueeId
+            });
+
+            pivotPoint && (center[OUTREAL] = UTIL.createCommand(COMMAND.SELECTCLAY, {
+                p1: [...pivotPoint],
+                p2: [...currentPoint]
+            }))
+
+            STATE.pivotPoint = null;
+            STATE.marqueeId = null;
+            STATE.isMarqueeing = false;
+        }
+    }
+
+    mousemove() {
+        let {
+            OUTVIZ
+        } = UIActionManager;
+
+        let {
+            STATE,
+            center
+        } = this;
+        let {
+            pivotPoint,
+            currentPoint,
+            lastPoint, marqueeId
+        } = STATE
+        if (STATE.isMarqueeing) {
+            center[OUTVIZ] = {
+                command: COMMAND.VIZRECTREGION,
+                data: {
+                    id: marqueeId,
+                    p1: [...pivotPoint],
+                    p2: [...currentPoint]
+                }
+            };
+
+        }
+
+        if (STATE.isSpanning) {
+            center[OUTVIZ] = {
+                command: COMMAND.VIZSPAN,
+                data: {
+                    p1: [...lastPoint],
+                    p2: [...currentPoint]
+                }
+            }
+            STATE.lastPoint = currentPoint;
+        } else {
+            STATE.lastPoint = null;
+        }
+    }
+
+
 }
 
-UIActionManager.OUTREAL = "OUTREAL"
-UIActionManager.OUTVIZ = "OUTVIZ"
+UIActionManager.OUTREAL = Symbol()
+UIActionManager.OUTVIZ = Symbol()
+UIActionManager.COMM = Symbol()

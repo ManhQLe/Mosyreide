@@ -4,9 +4,14 @@ const HID_NAME = {
     CANVAS:"CANVAS"
 }
 
+const IMODE = {
+    NORMAL:Symbol(),
+    SELECTED:Symbol()
+}
+
 const COMMAND = {
-    CREATECLAY:0,
-    SELECTCLAY:1,
+    CREATECLAY:Symbol(),
+    SELECTCLAY:Symbol(),
 
 
     VIZZOOM:2,

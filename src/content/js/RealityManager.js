@@ -42,6 +42,9 @@ class RealityManager extends mosyrejs2.RClay {
                 data.p1 = CE.view2World(data.p1);
                 data.p2 = CE.view2World(data.p2);
                 center[SIMWORLD] = msg;
+                break;  
+            case INNERCOMMAND.IAMSELECTED:
+                
         }
     }
 }
@@ -78,7 +81,7 @@ class ManagedClay extends mosyrejs2.RClay {
                     dim: agr.dim
                 }
                 let yes = GEO.rectOverlapVec(GEO.toBoundingBox(data.p1,data.p2) ,myBB)
-                console.log(yes)
+                UTIL.createCommand(INNERCOMMAND.IAMSELECTED,this)
                 break;
         }
     }
