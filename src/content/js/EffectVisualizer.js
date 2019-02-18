@@ -35,8 +35,7 @@ class EffectVisualizer extends Visualizer {
                 vec2.add(dx,CE.pos,dx);
                 CE.pos = dx;
                 break;
-            case COMMAND.VIZCLAY:
-
+            case COMMAND.VIZCLAY:                
                 this._drawVessel(data);
         }
     }

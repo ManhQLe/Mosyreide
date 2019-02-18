@@ -11,8 +11,8 @@ const IMODE = {
 
 const COMMAND = {
     CREATECLAY:Symbol(),
-    SELECTCLAY:Symbol(),
-
+    SELECTCLAY:"SELECTCLAY()",
+    SELECTEDCLAYS: Symbol(),
 
     VIZZOOM:2,
     VIZSPAN:3,

@@ -24,7 +24,7 @@ class UIActionManager extends mosyrejs2.RClay {
 
         d3.select(canvas).on("drop", function (e = d3.event) {
             e.preventDefault();
-            center[UIActionManager.OUTREAL] = {
+            center[UIActionManager.REALITY] = {
                 command: COMMAND.CREATECLAY,
                 data: {
                     pos: UTIL.getRelativeMouse(canvas, e)
@@ -63,6 +63,9 @@ class UIActionManager extends mosyrejs2.RClay {
 
                     STATE.isSpanning = e.buttons === 1 && e.altKey;
                     break;
+                case IMODE.SELECTED:
+                    break;
+
             }
 
 
@@ -83,7 +86,7 @@ class UIActionManager extends mosyrejs2.RClay {
 
     mouseup() {
         let {
-            OUTREAL,
+            REALITY,
             OUTVIZ
         } = UIActionManager;
 
@@ -91,11 +94,11 @@ class UIActionManager extends mosyrejs2.RClay {
         let {currentPoint, pivotPoint, isMarqueeing, marqueeId} = STATE;
 
         if (this.isInCanvas() &&
-            (currentPoint[0] === pivotPoint[0] && currentPoint[1] === pivotPoint[1])) {
-            center[OUTREAL] = UTIL.createCommand(COMMAND.SELECTCLAY, {
+            (currentPoint[0] === pivotPoint[0] && currentPoint[1] === pivotPoint[1])) {            
+            center[REALITY] = UTIL.createCommand(COMMAND.SELECTCLAY, {
                 p1: [...pivotPoint],
                 p2: [...currentPoint]
-            })
+            })            
         }
 
         if (isMarqueeing) {
@@ -103,15 +106,15 @@ class UIActionManager extends mosyrejs2.RClay {
                 id: marqueeId
             });
 
-            pivotPoint && (center[OUTREAL] = UTIL.createCommand(COMMAND.SELECTCLAY, {
+            pivotPoint && (center[REALITY] = UTIL.createCommand(COMMAND.SELECTCLAY, {
                 p1: [...pivotPoint],
                 p2: [...currentPoint]
             }))
-
-            STATE.pivotPoint = null;
+            
             STATE.marqueeId = null;
             STATE.isMarqueeing = false;
         }
+        STATE.pivotPoint = null;
     }
 
     mousemove() {
@@ -154,9 +157,21 @@ class UIActionManager extends mosyrejs2.RClay {
         }
     }
 
+    onResponse(cp){
+        let {STATE,center} = this
+        let {REALITY} = UIActionManager
+        let msg = center[REALITY]
+        let data = msg.data
+        switch(msg.command){
+            case COMMAND.SELECTEDCLAYS:
+                console.log(data.clays.length);
+                STATE.MODE = IMODE.SELECTED;
+
+        }
+
+    }
 
 }
 
-UIActionManager.OUTREAL = Symbol()
+UIActionManager.REALITY = Symbol()
 UIActionManager.OUTVIZ = Symbol()
-UIActionManager.COMM = Symbol()

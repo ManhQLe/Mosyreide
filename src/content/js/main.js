@@ -21,17 +21,16 @@ let RE = new RealityManager({
 
 
 mosyrejs2.Conduit.createLink([
-    UAI,UIActionManager.OUTREAL,
-    RE,RealityManager.IN,    
+    UAI,UIActionManager.REALITY,
+    RE,RealityManager.COMM,    
 ])
 
-
-let c1 = mosyrejs2.Conduit.createLink([
+mosyrejs2.Conduit.createLink([
     UAI,UIActionManager.OUTVIZ,
     EV,EffectVisualizer.IN,
     RE,RealityManager.VIZWORLD
 ])
 
-console.log(c1.contacts)
+
 
 
