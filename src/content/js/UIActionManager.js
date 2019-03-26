@@ -14,7 +14,6 @@ class UIActionManager extends mosyrejs2.RClay {
             marqueeId: Symbol()
         }
 
-
         let me = this;
 
         let UI = this.agreement.UI;
@@ -68,7 +67,6 @@ class UIActionManager extends mosyrejs2.RClay {
 
             }
 
-
             me.mousemove()
         })
     }
@@ -77,7 +75,6 @@ class UIActionManager extends mosyrejs2.RClay {
         let STATE = this.STATE;
         return STATE.pivotPoint &&
             STATE.pivotPoint[0] >= 0 && STATE.pivotPoint[1] >= 0;
-
     }
 
     mousedown() {
@@ -115,6 +112,7 @@ class UIActionManager extends mosyrejs2.RClay {
             STATE.isMarqueeing = false;
         }
         STATE.pivotPoint = null;
+        STATE.lastPoint = null;
     }
 
     mousemove() {
@@ -166,11 +164,8 @@ class UIActionManager extends mosyrejs2.RClay {
             case COMMAND.SELECTEDCLAYS:
                 console.log(data.clays.length);
                 STATE.MODE = IMODE.SELECTED;
-
         }
-
     }
-
 }
 
 UIActionManager.REALITY = Symbol()

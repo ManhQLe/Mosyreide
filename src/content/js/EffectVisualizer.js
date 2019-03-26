@@ -13,6 +13,7 @@ class EffectVisualizer extends Visualizer {
         var msg = this.center["IN"];
 
         var data = msg.data;
+        
         switch (msg.command) {
             case COMMAND.VIZCLEAR:
                 break;

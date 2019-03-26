@@ -13,7 +13,15 @@ class RealityManager extends mosyrejs2.RClay {
         this.__.InnerLink.link([this, RealityManager.SIMWORLD]);
     }
 
+
     onResponse(cp) {
+        if(cp === RealityManager.SIMWORLD)
+            this.responseSimWorld(cp)
+        else
+            this.responseOuterWorld(cp)
+    }
+
+    responseOuterWorld(cp){
         let {
             VIZWORLD,
             SIMWORLD,
@@ -27,10 +35,10 @@ class RealityManager extends mosyrejs2.RClay {
             InnerLink
         } = this.__;
 
-        let msg = center[RealityManager.COMM];
+        let msg = center[COMM];
         let data = msg.data;
-        console.log("DOH")      
-        debugger;  
+   
+
         switch (msg.command) {
             case COMMAND.CREATECLAY:
                 let clay = new ManagedClay({
@@ -51,13 +59,27 @@ class RealityManager extends mosyrejs2.RClay {
                 data.p2 = CE.view2World(data.p2);
                 center[SIMWORLD] = msg;
                 break;
-            case INNERCOMMAND.IAMSELECTED:
-                console.log("SELEDASD")
-                SELECTEDCLAYS.push(data.clay);
-                // center[COMM] = UTIL.createCommand(COMMAND.SELECTEDCLAYS, {
-                //     clays: [...SELECTEDCLAYS]
-                // })
+        }
+    }
 
+    responseSimWorld(cp){
+        let {
+            SIMWORLD,
+            COMM
+        } = RealityManager;
+        let center = this.center;
+        let msg = center[SIMWORLD];           
+        let data = msg.data;
+        let {
+            SELECTEDCLAYS
+        } = this.__;
+
+        switch(msg.command){
+            case INNERCOMMAND.IAMSELECTED:
+                SELECTEDCLAYS.push(data.clay);
+                center[COMM] = UTIL.createCommand(COMMAND.SELECTEDCLAYS, {
+                    clays: [...SELECTEDCLAYS]
+                })
         }
     }
 }
@@ -94,10 +116,9 @@ class ManagedClay extends mosyrejs2.RClay {
                     dim: agr.dim
                 }
                 let yes = GEO.rectOverlapVec(GEO.toBoundingBox(data.p1, data.p2), myBB)
-                console.log("TEST ME")
-                // yes && (center[ManagedClay.COMM] = UTIL.createCommand(INNERCOMMAND.IAMSELECTED, {
-                //     clay: this
-                // }))
+                if(yes)
+                    center[ManagedClay.COMM] = 
+                    UTIL.createCommand(INNERCOMMAND.IAMSELECTED,{clay:this})
                 break;
         }
     }
